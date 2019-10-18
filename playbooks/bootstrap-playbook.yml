@@ -21,6 +21,16 @@
       state: present
       regexp: '^%wheel\s'
       line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+  - name: Ensure noone is logging in as root directly
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      state: absent
+      regexp: '^%PermitRootLogin yes'
+  - name: Ensure noone is logging in as root directly
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      state: present
+      regexp: '^%PermitRootLogin no'
   - name: Add users | create users, shell, home dirs
     user:
       name: "{{ item | regex_replace('.pub','')  | regex_replace('/tmp/ffmd-ssh-keys/','') }}"
