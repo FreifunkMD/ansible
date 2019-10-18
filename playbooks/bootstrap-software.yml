@@ -1,0 +1,16 @@
+---
+- hosts: all
+  tasks:
+  - name: ensure git is at the latest version
+    apt: pkg=git state=latest
+  - name: ensure iftop is at the latest version
+    apt: pkg=iftop state=latest
+  - name: ensure mc is at the latest version
+    apt: pkg=mc state=latest
+  - name: ensure joe is at the latest version
+    apt: pkg=joe state=latest
+  - name: ensure vim is at the latest version
+    apt: pkg=vim state=latest
+  - name: ensure screen is at the latest version
+    apt: pkg=screen state=latest
+
