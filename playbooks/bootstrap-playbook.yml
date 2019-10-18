@@ -2,6 +2,8 @@
 - hosts: all
   user: root
   tasks:
+  - name: ensure sudo is at the latest version
+    apt: pkg=sudo state=latest
   - name: ensure git is at the latest version
     apt: pkg=git state=latest
   - name: Fetch SSH Keys from FreifunkMD git repository
@@ -9,8 +11,25 @@
       repo: 'https://github.com/FreifunkMD/ffmd-ssh-keys.git'
       dest: /tmp/ffmd-ssh-keys
       version: master
+  - name: Ensure group "wheel" exists
+    group:
+      name: wheel
+      state: present
+  - name: Configure group wheel for sudo
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%wheel\s'
+      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
   - name: Add users | create users, shell, home dirs
-    user: name={{ item | regex_replace('.pub','')  | regex_replace('/tmp/ffmd-ssh-keys/','')  }} shell=/bin/bash createhome=yes comment='created with ansible from ffmd-ssh-keys'
+    user:
+      name: "{{ item | regex_replace('.pub','')  | regex_replace('/tmp/ffmd-ssh-keys/','') }}"
+      shell: /bin/bash
+      createhome: yes
+      comment: 'created with ansible from ffmd-ssh-keys'
+      groups: wheel
+      password_lock: true
+      append: true
     with_fileglob:
       - /tmp/ffmd-ssh-keys/*.pub
   - name: Set authorized keys for users
@@ -21,3 +40,8 @@
       exclusive: true
     with_fileglob:
         - "/tmp/ffmd-ssh-keys/*.pub"
+  - name: lock password for root user
+    user:
+      name: root
+      password_lock: true
+
