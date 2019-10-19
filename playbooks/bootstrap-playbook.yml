@@ -22,16 +22,20 @@
       state: present
       regexp: '^%wheel\s'
       line: '%wheel ALL=(ALL) NOPASSWD: ALL'
-  - name: Ensure noone is logging in as root directly
+  - name: Ensure noone is logging in as root directly by not allowing root login
     lineinfile:
       path: /etc/ssh/sshd_config
       state: absent
-      regexp: '^%PermitRootLogin yes'
-  - name: Ensure noone is logging in as root directly
+      regexp: '^PermitRootLogin yes'
+  - name: Ensure noone is logging in as root directly by disabling root login altogether
     lineinfile:
       path: /etc/ssh/sshd_config
-      state: present
-      regexp: '^%PermitRootLogin no'
+      line: "PermitRootLogin no"
+      regexp: '^PermitRootLogin'
+  - name: Disable Password Authentication
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      line: "PasswordAuthentication no"
   - name: Add users | create users, shell, home dirs
     user:
       name: "{{ item | regex_replace('.pub','')  | regex_replace('/tmp/ffmd-ssh-keys/','') }}"
