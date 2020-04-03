@@ -1,0 +1,11 @@
+- hosts: all
+  become_user: root
+  become: yes
+  roles:
+  - { role: ansible.timezone }
+  vars:
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=false"
+    ag_timezone: Europe/Berlin
+  tasks:
+  - name: disable CDROM apt repository
+    shell: grep -v cdrom /etc/apt/sources.list > /tmp/sources.list && mv /tmp/sources.list /etc/apt/sources.list
