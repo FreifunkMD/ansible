@@ -20,7 +20,7 @@
       regexp: '^%wheel\s'
       line: '%wheel ALL=(ALL) NOPASSWD: ALL'
       validate: /usr/sbin/visudo -cf %s
- - name: Clone the SSH public keys repository
+  - name: Clone the SSH public keys repository
     git:
       repo: "{{ cfg_repo }}"
       dest: /root/cfg
