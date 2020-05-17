@@ -1,0 +1,13 @@
+---
+
+- name: Add Debian Backports Repository
+  apt_repository:
+    state: present
+    filename: debian-backports
+    repo: deb https://deb.debian.org/debian buster-backports main
+
+- name: Install BorgBackup
+  package:
+    state: latest
+    name:
+      - borgbackup

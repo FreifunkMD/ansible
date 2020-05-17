@@ -1,0 +1,9 @@
+---
+- hosts: gateways
+  roles:
+    - backup
+    - common
+    - sudo
+#    - gateway
+    - docker
+    - ssh

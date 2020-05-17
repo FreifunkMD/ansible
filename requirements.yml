@@ -1,0 +1,10 @@
+---
+# FIXME: We should use tags or commit hashes here
+- src: https://github.com/geerlingguy/ansible-role-ntp
+  name: ntp
+- src: https://github.com/weareinteractive/ansible-ufw
+  name: ufw
+- src: https://github.com/weareinteractive/ansible-sudo
+  name: sudo
+- src: https://github.com/paluh/ansible-augeas
+  name: augeas

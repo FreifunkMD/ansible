@@ -1,0 +1,13 @@
+---
+- name: Deploy docker-compose.yaml
+  copy:
+    src: docker-compose.yaml
+    dest: /srv/docker/docker-compose.yaml
+
+- name: Pull All Docker Images
+  shell:
+    cmd: docker-compose pull -q
+    chdir: /srv/docker
+
+- name: Start All Docker Containers / Services
+  shell: docker-compose --build --no-color -d --quiet-pull --remove-orphans

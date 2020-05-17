@@ -1,0 +1,35 @@
+---
+- name: Install Common Packages
+  package:
+    state: latest
+    name:
+      - ntp
+      - mc
+      - strace
+      - sudo
+      - lsof
+      - htop
+      - sysstat
+      - iotop
+      - iftop
+      - git
+      - apt-transport-https
+      - apt-utils
+      - etckeeper
+      - lsscsi
+      - gawk
+      - net-tools
+      - vim
+      - psmisc
+      - rsync
+      - tmux
+      - smartmontools
+      - curl
+      - wget
+      - python3-augeas
+
+- name: Activate Sysstat Logging
+  #augeas: commands='set /files/etc/default/sysstat/ENABLED "true"'
+  package: 
+    state: present
+    name: ntp

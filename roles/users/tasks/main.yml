@@ -1,0 +1,20 @@
+---
+#FIXME: Create usernames using the pubkey filename
+- name: Create User Accounts & Set sudo-Group
+  user:
+    name: "{{ item }}"
+    groups: "sudo"
+  with_items: "{{ admin_users }}"
+
+- name: "[localhost] Clone SSH-Keys from Git"
+  local_action:
+    module: git
+    repo: "{{ ssh_key_repo }}"
+    dest: /tmp/ffmd-ssh-keys
+  become: false
+
+- name: Add authorized_keys To All Users
+  authorized_key:
+    user: "{{ item }}"
+    key: "{{ lookup('file', '/tmp/ffmd-ssh-keys/'+ item + '.pub') }}"
+  with_items: "{{ admin_users }}"

@@ -1,0 +1,32 @@
+---
+# ansible python
+ansible_python_interpreter: /usr/bin/python3
+
+# Repo with SSH-Keys of admins
+ssh_key_repo: https://github.com/FreifunkMD/ffmd-ssh-keys
+
+# NTP
+ntp_area: de
+ntp_manage_config: true
+ntp_timezone: 'Europe/Berlin'
+
+# Sudoers
+sudo_defaults:
+  - defaults: env_reset
+  - defaults: mail_badpass
+  - defaults: secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    
+sudo_users:
+  - name: '%sudo'
+    nopasswd: yes
+
+purge_other_sudoers_files: 'yes'
+
+# Sudo users with Pubkey
+admin_users:
+  - christof
+  - jason
+  - jasper
+  - kwasir
+  - tux
+  - nold

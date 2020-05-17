@@ -1,0 +1,24 @@
+---
+# Firewall
+ufw_state: enabled
+ufw_ipv6: "yes"
+ufw_logging: "full"
+ufw_rules:
+  - { from_ip: '127.0.0.1/8', comment: 'Allow localhost' }
+  - { port: 22, rule: allow, comment: 'Allow SSH' }
+  - { port: 53, rule: allow, comment: 'Allow DNS' }
+  - { port: 40000, rule: allow, comment: 'Allow Babel' }
+  - { port: '40000:41000' , proto: 'udp', rule: allow, comment: 'Allow more Babel' }
+  - { port: 9100, from_ip: '5.252.224.201', rule: allow, comment: 'Allow Prometheus'}
+  - { from_ip: '10.11.12.1', to_ip: '10.11.12.2', to_port: 11001, rule: allow, comment: 'Allow yanic' }
+
+# Wireguard Secret
+wg_secret: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63326561643363343662623662396161383737333663663563626264666430393032353664316239
+          3764366564623738323466633438323764396234626564630a626234336333326235656133353466
+          64393164356531383361666132313562646130323333383536356134343234316431666665643134
+          3964643834303738610a343063653532316163393565343063633033333062323736626237373062
+          62346139353334366438373966383165313164346237616461633833383865333437616432643233
+          3332616631613634336266346664313837316337623739396135
+

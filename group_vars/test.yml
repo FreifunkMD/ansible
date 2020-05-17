@@ -1,0 +1,14 @@
+---
+# Firewall
+ufw_reset: false
+ufw_state: enabled
+ufw_ipv6: "yes"
+ufw_logging: "full"
+ufw_rules:
+  - { from_ip: '127.0.0.1/8', comment: 'Allow localhost' }
+  - { port: 22, rule: allow, comment: 'Allow SSH' }
+  - { port: 53, rule: allow, comment: 'Allow DNS' }
+  - { port: 40000, rule: allow, comment: 'Allow Babel' }
+  - { port: '40000:41000' , proto: 'udp', rule: allow, comment: 'Allow more Babel' }
+  - { port: 9100, from_ip: '5.252.224.201', rule: allow, comment: 'Allow Prometheus'}
+  - { from_ip: '10.11.12.1', to_ip: '10.11.12.2', to_port: 11001, rule: allow, comment: 'Allow yanic' }

@@ -1,0 +1,13 @@
+---
+- hosts: gw00.md.freifunk.net
+  become: true
+- hosts: test
+  roles:
+    - backup
+    - common
+    - ufw
+    - ssh
+    - ntp
+    - docker
+    - users
+    - gateway
