@@ -1,0 +1,21 @@
+---
+- name: Install SSH Server
+  package:
+    state: latest
+    name:
+      - openssh-server
+
+- name: Disable Root SSH Login
+  lineinfile:
+    state: present
+    destfile: '/etc/ssh/sshd_config'
+    regexp: '^#?PermitRootLogin\s'
+    line: 'PermitRootLogin no'
+  notify: restart sshd
+
+- name: Disable Password Authentication
+  lineinfile:
+    destfile: '/etc/ssh/sshd_config'
+    regexp: '^#?PasswordAuthentication\s'
+    line: 'PasswordAuthentication no'
+  notify: restart sshd

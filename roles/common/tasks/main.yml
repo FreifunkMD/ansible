@@ -1,0 +1,28 @@
+---
+- name: install common packages
+  package:
+    state: latest
+    name:
+      - ntp
+      - mc
+      - strace
+      - sudo
+      - lsof
+      - htop
+      - sysstat
+      - iotop
+      - iftop
+      - git
+      - apt-transport-https
+      - apt-utils
+      - etckeeper
+      - lsscsi
+      - gawk
+      - net-tools
+      - vim
+      - psmisc
+      - rsync
+      - tmux
+      - smartmontools
+      - curl
+      - wget

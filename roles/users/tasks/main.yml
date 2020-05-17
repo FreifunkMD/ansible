@@ -1,0 +1,19 @@
+---
+- name: Create user accounts and add users to groups
+  user:
+    name: "{{ item }}"
+    groups: "wheel"
+  with_items: "{{ admin_users }}"
+
+- name: "[localhost] Clone SSH-Keys from Git"
+  local_action:
+    module: git
+    repo: "{{ ssh_key_repo }}"
+    dest: /tmp/ffmd-ssh-keys
+  become: false
+
+- name: Add authorized keys to all users
+  authorized_key:
+    user: "{{ item }}"
+    key: "{{ lookup('file', '/tmp/ffmd-ssh-keys/'+ item + '.pub') }}"
+  with_items: "{{ admin_users }}"

@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  become: false
+  connection: local
+  gather_facts: no
+- hosts: test
+  roles:
+    - common
+    - ufw
+    - ssh
+    - ntp
+    - docker
+    - users
+#    - gateways

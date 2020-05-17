@@ -1,0 +1,58 @@
+# wg-docker environment file
+# FIXME: docs?
+# FIXME: Make all parameters configurable
+DEBUG=
+WGSECRET={{ wg_secret }}
+HOST_IP=
+APT_PROXY_PORT=
+
+# this is the whole net-wide prefix
+WHOLENET=fda9:26e:5805::/48
+
+# the prefix for infrastructure. This must be in $WHOLENET
+NODEPREFIX=fda9:26e:5805:bab1::/64
+
+# the prefix in which the clients pick their address. This must be in $WHOLENET
+CLIENTPREFIX=fda9:26e:5805:bab0::/64
+
+# the next-node address according to site.conf
+NEXTNODE=fda9:26e:5805:bab0::1
+
+# assign this address to one of the docker hosts nic
+OWNIP=fda9:26e:5805:bab1:aaaa::1
+
+CLATPREFIX=fdff:ffff:ffff::/48
+PLATPREFIX=fdff:ffff:fffe::/48
+
+
+# tcp port where the broker listens for connections
+BROKERPORT=40000
+
+# start of udp portrange accepting wireguard connections
+STARTPORT=40000
+
+# end of udp portrange accepting wireguard connections
+ENDPORT=41000
+
+# control port of local babeld
+BABELPORT=33123
+
+#MTU of the VPN in this network
+MTU=1374
+
+# wireguard command
+WG=/usr/bin/wg
+
+# accepting inbound wireguard connections on this interface
+WAN=eth0
+
+# allow MAXCONNECTIONS concurrent vpn connections
+MAXCONNECTIONS=150
+
+# this file contains the secret key
+PRIVATEKEY=/etc/wg-broker/secret
+
+# this is the l3roamd socket
+L3ROAMDSOCK=/var/run/l3roamd.sock
+MMFDSOCK=/var/run/mmfd.sock
+MESHIFS="backend-bab2"

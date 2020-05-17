@@ -1,0 +1,49 @@
+version: "3"
+services:
+  wg:
+    image: klausdieter371/wg-docker:latest
+    network_mode: "host"
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    sysctls:
+      - net.ipv6.conf.all.forwarding=1
+      - net.ipv6.conf.all.accept_redirects=0
+      - net.ipv4.conf.all.rp_filter=0
+    restart: unless-stopped
+#    env_file: /root/wg-docker/wg-docker-env
+   
+  yanic:
+     image: ffmd/yanic:latest
+     network_mode: "host"
+     restart: unless-stopped
+#     env_file: /root/docker-yanic/yanic-docker-env
+     restart: unless-stopped
+   
+  jool:
+     image: ffmd/yool:latest
+     network_mode: "host"
+     privileged: true
+     cap_add:
+       - NET_ADMIN
+     devices:
+       - /dev/net/tun:/dev/net/tun
+     sysctls:
+       - net.ipv6.conf.all.forwarding=1
+       - net.ipv6.conf.all.accept_redirects=0
+       - net.ipv4.conf.all.rp_filter=0
+     restart: unless-stopped
+#     env_file: /root/jool-docker/jool.env
+     command: "/root/run.sh"
+     restart: unless-stopped
+   
+  dns64:
+     image: mmfd/dns64:latest
+     ports:
+       - 127.0.0.1:53:53/tcp
+       - 127.0.0.1:53:53/udp
+#     env_file: /root/dns64-env
+     command: named
+     restart: unless-stopped

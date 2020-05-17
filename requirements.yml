@@ -1,0 +1,7 @@
+---
+- src: https://github.com/geerlingguy/ansible-role-ntp
+  name: ntp
+- src: https://github.com/weareinteractive/ansible-ufw
+  name: ufw
+- src: https://github.com/weareinteractive/ansible-sudo
+  name: sudo
