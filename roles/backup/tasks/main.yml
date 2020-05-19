@@ -6,8 +6,19 @@
     filename: debian-backports
     repo: deb https://deb.debian.org/debian buster-backports main
 
-- name: Install BorgBackup
+- name: Pin Backports Priority
+  copy:
+    src: "{{ role_path }}/files/apt_pref"
+    dest: /etc/apt/preferences.d/backports
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install BorgBackup & BorgMatic
   package:
-    state: present
+    state: latest
     name:
       - borgbackup
+      - borgmatic
+
+# BORG_PASSPHRASE

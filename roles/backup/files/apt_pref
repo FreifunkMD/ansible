@@ -1,0 +1,7 @@
+Package: *
+Pin: release n=buster-backports
+Pin-Priority: 420
+
+Package: borgbackup
+Pin: release n=buster-backports
+Pin-Priority: 1337
