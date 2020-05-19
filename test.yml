@@ -6,7 +6,7 @@
     - backup
     - common
     - ufw
-    - ssh
+    - sshd
     - ntp
     - docker
     - users

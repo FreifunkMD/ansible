@@ -30,3 +30,20 @@ admin_users:
   - kwasir
   - tux
   - nold
+
+# openssh-server
+openssh_port: 22
+openssh_address_family: any
+openssh_listen_address:
+  - '0.0.0.0'
+  - '::'
+
+openssh_permit_root_login: "no"
+openssh_pub_key_authentication: "yes"
+openssh_host_based_authentication: "no"
+openssh_ignore_user_known_hosts: "no"
+openssh_ignore_rhosts: "yes"
+openssh_password_authentication: "no"
+openssh_challenge_response_authentication: "no"
+openssh_gssapi_authentication: "no"
+openssh_x11_forwarding: "no"

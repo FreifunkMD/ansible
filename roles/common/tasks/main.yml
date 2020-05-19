@@ -26,10 +26,7 @@
       - smartmontools
       - curl
       - wget
-      - python3-augeas
+#      - python3-augeas
 
-- name: Activate Sysstat Logging
-  #augeas: commands='set /files/etc/default/sysstat/ENABLED "true"'
-  package: 
-    state: present
-    name: ntp
+#- name: Activate Sysstat Logging
+#  action: augeas commands='set "/files/etc/default/sysstat/ENABLED" "true"'

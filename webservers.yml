@@ -2,4 +2,6 @@
 - hosts: webservers
   roles:
    - common
+   - users
+   - sshd
    - webserver

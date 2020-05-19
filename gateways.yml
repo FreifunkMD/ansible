@@ -6,4 +6,4 @@
     - sudo
 #    - gateway
     - docker
-    - ssh
+    - sshd
