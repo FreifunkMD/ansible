@@ -27,37 +27,41 @@
     recurse: true
     owner: root
     group: root
-    mode: 0750
+    mode: '0750'
 
 # jool Kernel Module
 #
 - name: Clone Git Repository
   git:
     repo: "{{ jool_git_repo }}"
-    dest: "{{ git_dir }}/jool"
+    dest: "{{ git_dir }}/jool-v{{ jool_version }}"
     version: "v{{ jool_version }}"
     force: true
-  register: git_status
 
-- name: Check If Kernel Module is Installed
+- name: Check If Kernel Module Needs To Be Built
   shell:
-    cmd: "dkms status jool | grep -q '{{ jool_version }}.*{{ ansible_kernel }}'"
+    cmd: "dkms status jool/v{{ jool_version }} | grep -q '{{ ansible_kernel }}'"
   register: module_installed
   ignore_errors: true
 
 - name: Compile & Install Kernel Module
   shell:
     cmd: "{{ item }}"
-    chdir: "{{ git_dir }}/jool"
-  when: module_installed.rc != 0
+#    chdir: "{{ git_dir }}/jool-v{{ jool_version }}"
+  when: module_installed is failed
   with_items:
-    - "./autogen.sh"
-    - "./configure"
-    - "make"
-    - "dkms install ."
-    - "make clean"
-    - "git reset --hard v{{ jool_version }}"
+    - "dkms add 'jool/v{{ jool_version }}'"
+    - "dkms build 'jool/v{{ jool_version }}'"
+    - "dkms install 'jool/v{{ jool_version }}'"
+#    - "./autogen.sh"
+#    - "./configure"
+#    - "make"
+#    - "dkms install ."
 
+- name: Modprobe Jool Module
+  modprobe:
+    name: jool
+    state: present
 
 # jool docker container
 #
@@ -65,7 +69,7 @@
   git:
     repo: "{{ jool_docker_repo }}"
     dest: "{{ git_dir }}/jool-docker"
-    version: master
+    version: missingdep
     force: true
   register: docker_git_status
 
@@ -85,9 +89,13 @@
   docker_container:
     name: jool
     image: "{{ jool_docker_image }}"
-    command: '/root/run.sh'
+    command: 'jool file handle /root/jool.conf'
     network_mode: host
     privileged: true
+    env:
+      V4IP: "{{ jool_ipv4 }}"
+      V6IP: "{{ jool_ipv6 }}"
+      MARK_DEC: "{{ jool_mark_dec }}"
     capabilities:
       - NET_ADMIN
     devices:

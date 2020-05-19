@@ -1,20 +1,29 @@
 ---
 #FIXME: Create usernames using the pubkey filename
+- name: Clone SSH-Keys from Git
+  git:
+    repo: "{{ ssh_key_repo }}"
+    dest: '/tmp/ffmd-ssh-keys'
+    force: true
+    version: 'master'
+
+# Fileglob shows all files matching pattern
+# Creates user for every pubkey
 - name: Create User Accounts & Set sudo-Group
   user:
-    name: "{{ item }}"
-    groups: "sudo"
-  with_items: "{{ admin_users }}"
-
-- name: "[localhost] Clone SSH-Keys from Git"
-  local_action:
-    module: git
-    repo: "{{ ssh_key_repo }}"
-    dest: /tmp/ffmd-ssh-keys
-  become: false
+    name: "{{ item | basename | regex_replace('.pub','') }}"
+    shell: '/bin/bash'
+    createhome: true
+    password_lock: true
+    comment: 'Created with ansible from SSH pubkey repository'
+    groups: 'sudo'
+    append: true
+  with_fileglob:
+    - '/tmp/ffmd-ssh-keys/*.pub'
 
 - name: Add authorized_keys To All Users
   authorized_key:
-    user: "{{ item }}"
-    key: "{{ lookup('file', '/tmp/ffmd-ssh-keys/'+ item + '.pub') }}"
-  with_items: "{{ admin_users }}"
+    user: "{{ item | basename | regex_replace('.pub','') }}"
+    key: "{{ lookup('file', item) }}"
+  with_fileglob:
+    - '/tmp/ffmd-ssh-keys/*.pub'
