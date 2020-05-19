@@ -1,7 +1,7 @@
 ---
 - name: install required packages
   package:
-    state: latest
+    state: present
     name:
       - ca-certificates
       - curl
@@ -15,14 +15,15 @@
     id: 0EBFCD88
     url: https://download.docker.com/linux/debian/gpg
 
-- apt_repository:
+- name: Add Docker-CE Upstream Repository
+  apt_repository:
     state: present
     repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_lsb.codename|lower }} stable
     update_cache: yes
 
 - name: Install Docker-CE
   package:
-    state: latest
+    state: present
     name:
       -  docker-ce
 
@@ -31,18 +32,3 @@
     state: started
     enabled: true
     name: docker
-
-- name: Create docker directory if it does not exist
-  file:
-    state: directory
-    path: /srv/docker
-    mode: '0750'
-    owner: root
-    group: root
-
-- name: Install Docker-Compose
-  pip:
-    state: latest
-    executable: pip3
-    name:
-      - docker-compose

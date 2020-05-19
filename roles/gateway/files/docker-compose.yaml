@@ -20,7 +20,6 @@ services:
      network_mode: "host"
      restart: unless-stopped
 #     env_file: /root/docker-yanic/yanic-docker-env
-     restart: unless-stopped
    
   jool:
      image: ffmd/yool:latest

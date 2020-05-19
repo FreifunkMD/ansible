@@ -1,5 +1,4 @@
 ---
-# openssh-server
 - name: Configure SSHd
   include_role:
     name: sshd
@@ -18,5 +17,3 @@
     openssh_challenge_response_authentication: "no"
     openssh_gssapi_authentication: "no"
     openssh_x11_forwarding: "no"
-  dependencies:
-    - { role: users }

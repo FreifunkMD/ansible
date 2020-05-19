@@ -8,6 +8,6 @@
 
 - name: Install BorgBackup
   package:
-    state: latest
+    state: present
     name:
       - borgbackup

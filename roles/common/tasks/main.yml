@@ -1,7 +1,7 @@
 ---
 - name: Install Common Packages
   package:
-    state: latest
+    state: present
     name:
       - ntp
       - mc
@@ -28,5 +28,6 @@
       - wget
 #      - python3-augeas
 
+#FIXME
 #- name: Activate Sysstat Logging
 #  action: augeas commands='set "/files/etc/default/sysstat/ENABLED" "true"'

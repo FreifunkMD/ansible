@@ -1,0 +1,99 @@
+---
+# Jool Configuration
+#  - Install Build Depends
+#  - Clone jool & jool-docker git
+#  - build kernel module & container image [if needed]
+#  - Profit!
+#
+# For Variables see /roles/jool/defaults/main.yml
+#
+- name: Install Kernel-Headers & Build Dependencies
+  package:
+    state: present
+    name:
+      - dkms
+      - autoconf
+      - libtool
+      - pkg-config
+      - build-essential
+      - "linux-headers-{{ ansible_kernel }}"
+      - libnl-genl-3-dev
+      - libxtables-dev
+
+- name: Ensure Git Directory Exists
+  file:
+    state: directory
+    dest: "{{ git_dir }}"
+    recurse: true
+    owner: root
+    group: root
+    mode: 0750
+
+# jool Kernel Module
+#
+- name: Clone Git Repository
+  git:
+    repo: "{{ jool_git_repo }}"
+    dest: "{{ git_dir }}/jool"
+    version: "v{{ jool_version }}"
+    force: true
+  register: git_status
+
+- name: Check If Kernel Module is Installed
+  shell:
+    cmd: "dkms status jool | grep -q '{{ jool_version }}.*{{ ansible_kernel }}'"
+  register: module_installed
+  ignore_errors: true
+
+- name: Compile & Install Kernel Module
+  shell:
+    cmd: "{{ item }}"
+    chdir: "{{ git_dir }}/jool"
+  when: module_installed.rc != 0
+  with_items:
+    - "./autogen.sh"
+    - "./configure"
+    - "make"
+    - "dkms install ."
+    - "make clean"
+    - "git reset --hard v{{ jool_version }}"
+
+
+# jool docker container
+#
+- name: Clone Docker Git Repo
+  git:
+    repo: "{{ jool_docker_repo }}"
+    dest: "{{ git_dir }}/jool-docker"
+    version: master
+    force: true
+  register: docker_git_status
+
+- name: Build Docker Container
+  docker_image:
+    name: "{{ jool_docker_image }}"
+    state: present
+    source: build
+    build:
+      pull: true
+      path: "{{ git_dir }}/jool-docker"
+      args:
+        JOOL_VERSION: "{{ jool_version }}"
+  when: docker_git_status.changed
+
+- name: Start jool-Container
+  docker_container:
+    name: jool
+    image: "{{ jool_docker_image }}"
+    command: '/root/run.sh'
+    network_mode: host
+    privileged: true
+    capabilities:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    sysctls:
+      net.ipv6.conf.all.forwarding: '1'
+      net.ipv6.conf.all.accept_redirects: '0'
+      net.ipv4.conf.all.rp_filter: '0'
+    restart: yes

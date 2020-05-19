@@ -1,0 +1,7 @@
+---
+jool_version: "4.0.5"
+jool_git_repo: https://github.com/NICMx/Jool
+jool_git_dest: /usr/src/jool
+jool_docker_repo: https://github.com/FreifunkMD/jool-docker
+jool_docker_image: "ffmd/jool:{{ jool_version }}"
+git_dir: /usr/src

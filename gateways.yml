@@ -6,4 +6,5 @@
     - sudo
 #    - gateway
     - docker
+    - jool
     - sshd
