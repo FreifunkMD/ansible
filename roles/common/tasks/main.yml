@@ -3,6 +3,7 @@
   package:
     state: present
     name:
+      - debian-goodies
       - ntp
       - mc
       - strace

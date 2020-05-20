@@ -1,0 +1,40 @@
+---
+
+- name: Install APT Extension Packages
+  package:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - debian-goodies
+    - lsof
+    - apt-transport-https
+    - unattended-upgrades
+
+- name: Configure APT
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/apt/apt.conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+   - apt-recommends.conf
+   - apt-periodic.conf
+   - unattended-upgrades.conf
+   - unattended-upgrades-dpkg.conf
+   - apt-checkrestart.conf
+
+- name: Add Debian Backports Repository
+  apt_repository:
+    state: present
+    filename: debian-backports
+    repo: deb https://deb.debian.org/debian buster-backports main
+
+- name: Pin Backports Priority
+  copy:
+   # src: "{{ role_path }}/files/apt_pref"
+    src: apt-backports-pref
+    dest: /etc/apt/preferences.d/backports
+    owner: root
+    group: root
+    mode: '0644'
