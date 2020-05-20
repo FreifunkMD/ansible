@@ -34,25 +34,25 @@
 - name: Clone Git Repository
   git:
     repo: "{{ jool_git_repo }}"
-    dest: "{{ git_dir }}/jool-v{{ jool_version }}"
+    dest: "{{ git_dir }}/jool-{{ jool_version }}"
     version: "v{{ jool_version }}"
     force: true
 
 - name: Check If Kernel Module Needs To Be Built
   shell:
-    cmd: "dkms status jool/v{{ jool_version }} | grep -q '{{ ansible_kernel }}'"
+    cmd: "dkms status jool/{{ jool_version }} | grep -q '{{ ansible_kernel }}.*installed'"
   register: module_installed
   ignore_errors: true
 
 - name: Compile & Install Kernel Module
   shell:
     cmd: "{{ item }}"
-#    chdir: "{{ git_dir }}/jool-v{{ jool_version }}"
+#    chdir: "{{ git_dir }}/jool-{{ jool_version }}"
   when: module_installed is failed
   with_items:
-    - "dkms add 'jool/v{{ jool_version }}'"
-    - "dkms build 'jool/v{{ jool_version }}'"
-    - "dkms install 'jool/v{{ jool_version }}'"
+    - "dkms add 'jool/{{ jool_version }}'"
+    - "dkms build 'jool/{{ jool_version }}'"
+    - "dkms install 'jool/{{ jool_version }}'"
 #    - "./autogen.sh"
 #    - "./configure"
 #    - "make"
