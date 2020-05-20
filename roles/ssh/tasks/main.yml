@@ -17,3 +17,5 @@
     openssh_challenge_response_authentication: "no"
     openssh_gssapi_authentication: "no"
     openssh_x11_forwarding: "no"
+    openssh_scrict_modes: "yes"
+    openssh_subsystem: 'sftp /usr/lib/openssh/sftp-server'

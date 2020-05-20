@@ -41,8 +41,8 @@
 - name: Check If Kernel Module Needs To Be Built
   shell:
     cmd: "dkms status jool/{{ jool_version }} | grep -q '{{ ansible_kernel }}.*installed'"
+  check_mode: yes
   register: module_installed
-  ignore_errors: true
 
 - name: Compile & Install Kernel Module
   shell:
