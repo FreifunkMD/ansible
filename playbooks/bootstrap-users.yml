@@ -1,0 +1,65 @@
+---
+- hosts: all
+  become_user: root
+  become: yes
+  vars:
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=false"
+  tasks:
+  - name: ensure sudo is at the latest version
+    apt: pkg=sudo state=latest
+  - name: ensure git is at the latest version
+    apt: pkg=git state=latest
+  - name: Ensure group "wheel" exists
+    group:
+      name: wheel
+      state: present
+  - name: Configure group wheel for sudo
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%wheel\s'
+      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+      validate: /usr/sbin/visudo -cf %s
+  - name: Clone the SSH public keys repository
+    git:
+      repo: "{{ cfg_repo }}"
+      dest: /root/cfg
+    vars:
+      cfg_repo: https://github.com/FreifunkMD/ffmd-ssh-keys.git
+  - name: Collect the key names
+    find:
+      paths:
+        - "/root/cfg"
+      patterns:
+        - "*.pub"
+    register: pubkeys
+  - name: Add users | create users, shell, home dirs
+    user:
+      name: "{{ item.path | basename | regex_replace('.pub','') }}"
+      shell: /bin/bash
+      createhome: yes
+      comment: 'created with ansible from SSH pubkey repository'
+      groups: wheel
+      password_lock: true
+      append: true
+    with_items:
+      - "{{ pubkeys.files }}"
+  - name: Create .ssh user directories
+    file:
+      path: "{{ '/home/' + item.path | basename | regex_replace('.pub','') + '/.ssh'  }}"
+      state: directory
+      mode: "0700"
+      owner: "{{ item.path | basename | regex_replace('.pub','') }}"
+      group: "{{ item.path | basename | regex_replace('.pub','') }}"
+    with_items:
+      - "{{ pubkeys.files }}"
+  - name: Set authorized keys for users
+    copy:
+      src: "{{ item.path }}"
+      remote_src: yes
+      dest: "{{ '/home/' + item.path | basename | regex_replace('.pub','') + '/.ssh/authorized_keys'  }}"
+      mode: "0600"
+      owner: "{{ item.path | basename | regex_replace('.pub','') }}"
+      group: "{{ item.path | basename | regex_replace('.pub','') }}"
+    with_items:
+      - "{{ pubkeys.files }}"
